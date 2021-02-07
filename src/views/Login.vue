@@ -64,7 +64,7 @@ export default {
           .signInWithEmailAndPassword(this.email, this.password);
 
         if (response) {
-          await this.$store.dispatch('auth/setUserAuth', response.user);
+          // await this.$store.dispatch('auth/setUserAuth');
           await this.$router.push({ name: 'Home' });
         }
       } catch (e) {
