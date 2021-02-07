@@ -1,17 +1,31 @@
 <template>
   <div class="home">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <v-btn
+      @click="userLogout"
+      class="mx-auto"
+      color="success"
+      text
+    >Logout</v-btn>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+
+import firebase from 'firebase';
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld,
+  methods: {
+    async userLogout() {
+      try {
+        await firebase
+          .auth()
+          .signOut();
+        await this.$router.push({ name: 'Login' });
+      } catch (e) {
+        this.errorMessage = e.message;
+      }
+    },
   },
 };
 </script>

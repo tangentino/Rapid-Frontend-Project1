@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import 'firebase/auth';
-import store from '@/store';
+import firebase from 'firebase/app';
+
+// import store from '@/store';
 
 Vue.use(VueRouter);
 
@@ -18,13 +20,17 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),
-    requiresAuth: false,
+    meta: {
+      requiresAuth: false,
+    },
   },
   {
     path: '/register',
     name: 'Register',
     component: () => import('../views/Register.vue'),
-    requiresAuth: false,
+    meta: {
+      requiresAuth: false,
+    },
   },
 ];
 
@@ -35,7 +41,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  if (to.matched.some((x) => x.meta.requiresAuth) && !store.getters('auth/isAuthenticated')) {
+  if (to.meta.requiresAuth && !firebase.auth().currentUser) {
     next('/login');
   } else {
     next();
