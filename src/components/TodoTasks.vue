@@ -11,7 +11,7 @@
               text
               color="error"
               @click="deleteCompletedTodos()">
-              Remove all completed
+              Remove completed tasks
             </v-btn>
           </v-toolbar>
           <v-list elevation="5">
@@ -185,7 +185,7 @@ export default {
     },
     totalTodos() {
       return Object.keys(this.todos).length;
-    }
+    },
   },
 };
 </script>
