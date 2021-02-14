@@ -1,25 +1,43 @@
+// import firebase from 'firebase/app';
+// import 'firebase/database';
+// import 'firebase/auth';
+
+import firebase from 'firebase';
+
 export default {
   state: {
-    todos: null,
+    todos: [],
+    ref: null,
   },
   mutations: {
-    addTodo(state, todo) {
-      state.todos.push(todo);
-    },
     setTodos(state, todos) {
       state.todos = todos;
     },
-    removeTodo(state, index) {
-      state.todos.splice(index, 1);
+    setRef(state, ref) {
+      state.ref = ref;
     },
   },
   actions: {
-    createTodo(context, todo) {
-      context.commit('addTodo', todo);
+    setTodosAction(context, todos) {
+      context.commit('setTodos', todos);
     },
-    deleteTodo(context, todo) {
-      const index = context.state.todos.indexOf(todo);
-      context.commit('removeTodo', index);
+    setTodosRef(context, user) {
+      if (user) {
+        const todoRef = firebase.database()
+          .ref(`users/${user.uid}/todos`);
+        todoRef.on('value', (snapshot) => {
+          context.dispatch('setTodosAction', snapshot.val());
+        });
+        context.commit('setRef', todoRef);
+      }
+    },
+  },
+  getters: {
+    getTodos(state) {
+      return state.todos;
+    },
+    getTodosRef(state) {
+      return state.ref;
     },
   },
 };

@@ -1,18 +1,16 @@
-import 'firebase/auth';
-import firebase from 'firebase/app';
-
 export default {
   state: {
     user: null,
   },
   mutations: {
-    setUser(state) {
-      state.user = firebase.auth().currentUser;
+    setUser(state, user) {
+      state.user = user;
     },
   },
   actions: {
-    setUserAuth(context) {
-      context.commit('setUser');
+    setUserProfile(context, user) {
+      context.commit('setUser', user);
+      context.dispatch('setTodosRef', user, { root: true });
     },
   },
   getters: {

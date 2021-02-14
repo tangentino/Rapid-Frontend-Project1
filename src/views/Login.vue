@@ -28,10 +28,22 @@
         @click="userLogin"
         class="mx-auto"
         color="success"
+        elevation="3"
         rounded
         x-large
-        width="200"
+        width="400"
       >Login</v-btn>
+    </v-card-actions>
+    <v-card-actions>
+      <v-btn
+        @click="userGoogleLogin"
+        class="mx-auto"
+        color="info"
+        elevation="3"
+        rounded
+        x-large
+        width="400"
+      >Sign in with Google</v-btn>
     </v-card-actions>
     <v-card-actions>
       <v-btn
@@ -39,7 +51,8 @@
         class="mx-auto"
         color="success"
         text
-      >Register</v-btn>
+      >Register
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -64,7 +77,18 @@ export default {
           .signInWithEmailAndPassword(this.email, this.password);
 
         if (response) {
-          // await this.$store.dispatch('auth/setUserAuth');
+          await this.$router.replace({ name: 'Home' });
+        }
+      } catch (e) {
+        this.errorMessage = e.message;
+      }
+    },
+    async userGoogleLogin() {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const response = await firebase.auth().signInWithPopup(provider);
+
+        if (response) {
           await this.$router.push({ name: 'Home' });
         }
       } catch (e) {
