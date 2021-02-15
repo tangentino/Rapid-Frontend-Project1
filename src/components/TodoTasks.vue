@@ -25,7 +25,7 @@
               <v-list-item>
                 <v-checkbox
                   v-model="task.isDone"
-                  @click="toggleComplete(userRef,taskID)">
+                  @click="toggleComplete(taskID)">
                 </v-checkbox>
                 <v-list-item-content>
                   <v-list-item-title
@@ -124,10 +124,26 @@ export default {
         });
       });
     },
-    toggleComplete(ref, taskID) {
-      ref.child(taskID).transaction((todo) => {
+    toggleComplete(taskID, subtaskID) {
+      this.userRef.child(taskID).transaction((todo) => {
         if (todo) {
-          todo.isDone = !todo.isDone;
+          if (subtaskID) {
+            todo.subtasks[subtaskID].isDone = !todo.subtasks[subtaskID].isDone;
+            // eslint-disable-next-line max-len
+            const activeSubtasks = Object.keys(todo.subtasks).filter((key) => !todo.subtasks[key].isDone);
+            if (activeSubtasks.length === 0) {
+              todo.isDone = true;
+            } else {
+              todo.isDone = false;
+            }
+          } else {
+            todo.isDone = !todo.isDone;
+            if (todo.subtasks) {
+              Object.keys(todo.subtasks).forEach((key) => {
+                todo.subtasks[key].isDone = todo.isDone;
+              });
+            }
+          }
         }
         return todo;
       });

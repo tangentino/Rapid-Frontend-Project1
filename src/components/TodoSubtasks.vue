@@ -15,7 +15,7 @@
           <v-list-item>
             <v-checkbox
               v-model="subtask.isDone"
-              @click="toggleComplete(subtaskRef,subtaskID)">
+              @click="toggleComplete(mainTaskID,subtaskID)">
             </v-checkbox>
             <v-list-item-content>
               <v-list-item-title
