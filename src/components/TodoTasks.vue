@@ -74,6 +74,15 @@
                   </v-icon>
                 </v-btn>
               </v-list-item>
+              <v-progress-linear
+                :value="taskProgress(taskID)"
+                color="success"
+                height="15"
+                striped>
+                <template v-slot:default="{ value }">
+                  <strong>{{ value }}%</strong>
+                </template>
+              </v-progress-linear>
               <v-divider/>
               <TodoSubtasks
                 :subtasks="task.subtasks"
@@ -111,6 +120,19 @@ export default {
     };
   },
   methods: {
+    taskProgress(taskID) {
+      const todo = this.todos[taskID];
+      if (todo.isDone) {
+        return 100;
+      }
+      if (todo.subtasks) {
+        const totalSubtasks = Object.keys(todo.subtasks).length;
+        // eslint-disable-next-line max-len
+        const completedSubtasks = Object.keys(todo.subtasks).filter((key) => todo.subtasks[key].isDone).length;
+        return Math.ceil((completedSubtasks / totalSubtasks) * 100);
+      }
+      return 0;
+    },
     deleteTodo(ref, taskID) {
       ref.child(taskID).remove();
     },
