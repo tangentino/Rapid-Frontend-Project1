@@ -1,9 +1,6 @@
 <template>
   <v-card outlined elevation="3" width="500" class="mx-auto">
     <v-card-title class="justify-center"> LOGIN AND REGISTER </v-card-title>
-    <v-card-subtitle class="text-center">
-      Placeholder registration for now: just enter desired email/password and click register
-    </v-card-subtitle>
     <v-card-text>
       <v-form>
         <v-text-field
