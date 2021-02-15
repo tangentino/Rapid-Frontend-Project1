@@ -77,7 +77,7 @@
               <v-progress-linear
                 :value="taskProgress(taskID)"
                 color="success"
-                height="15"
+                height="17"
                 striped>
                 <template v-slot:default="{ value }">
                   <strong>{{ value }}%</strong>
