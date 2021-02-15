@@ -63,6 +63,7 @@ export default {
     createSubtask() {
       if (this.subtaskText) {
         this.subtaskRef.push({ text: this.subtaskText.trim(), isDone: false });
+        this.userRef.child(this.mainTaskID).update({ isDone: false });
       }
       this.subtaskText = '';
     },
