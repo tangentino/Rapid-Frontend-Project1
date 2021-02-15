@@ -2,17 +2,23 @@
   <div>
     <v-container>
       <v-row justify="space-around">
-        <v-col cols="8">
+        <v-col>
           <v-toolbar elevation="5" dark>
-            <v-toolbar-title> Your tasks </v-toolbar-title>
-            <v-spacer/>
-            <v-btn
-              small
-              text
-              color="error"
-              @click="deleteCompletedTodos()">
-              Remove completed tasks
-            </v-btn>
+            <v-toolbar-title> {{ todoMessage() }} </v-toolbar-title>
+            <template v-slot:extension>
+              <v-tabs>
+                <v-tabs-slider color="blue"/>
+                <v-tab @click="showAllTodos">All</v-tab>
+                <v-tab @click="showActiveTodos">Active</v-tab>
+                <v-tab @click="showCompletedTodos">Completed</v-tab>
+              </v-tabs>
+              <v-btn
+                text
+                color="error"
+                @click="deleteCompletedTodos()">
+                Remove completed tasks
+              </v-btn>
+            </template>
           </v-toolbar>
           <v-list elevation="5">
             <div v-for="(task,taskID) in modifiedTodos" :key="taskID">
@@ -99,6 +105,9 @@ export default {
       date: null,
       editing: null,
       editingText: '',
+      showAll: true,
+      showActive: false,
+      showCompleted: false,
     };
   },
   methods: {
@@ -164,6 +173,27 @@ export default {
         return todo;
       });
     },
+    todoMessage() {
+      if (this.todos) {
+        return `You currently have ${this.totalTodos} total tasks (${this.activeTodos.length} active, ${this.completedTodos.length} completed)`;
+      }
+      return 'You currently have no tasks';
+    },
+    showAllTodos() {
+      this.showAll = true;
+      this.showActive = false;
+      this.showCompleted = false;
+    },
+    showActiveTodos() {
+      this.showAll = false;
+      this.showActive = true;
+      this.showCompleted = false;
+    },
+    showCompletedTodos() {
+      this.showAll = false;
+      this.showActive = false;
+      this.showCompleted = true;
+    },
   },
   computed: {
     ...mapGetters({
@@ -171,20 +201,50 @@ export default {
       todos: 'getTodos',
     }),
     modifiedTodos() {
-      const ans = {};
-      const keys = Object.keys(this.todos).sort((a, b) => {
-        if (this.todos[a].date === this.todos[b].date) {
-          return 0;
-        }
-        return this.todos[a].date < this.todos[b].date ? -1 : 1;
-      });
-      keys.forEach((key) => {
-        ans[key] = this.todos[key];
-      });
-      return ans;
+      if (this.todos) {
+        const keys = this.filteredTodos;
+        const ans = {};
+        const sorted = keys.sort((a, b) => {
+          if (this.todos[a].date === this.todos[b].date) {
+            return 0;
+          }
+          return this.todos[a].date < this.todos[b].date ? -1 : 1;
+        });
+        sorted.forEach((key) => {
+          ans[key] = this.todos[key];
+        });
+        return ans;
+      }
+      return this.todos;
     },
     totalTodos() {
-      return Object.keys(this.todos).length;
+      if (this.todos) {
+        return Object.keys(this.todos).length;
+      }
+      return 0;
+    },
+    completedTodos() {
+      if (this.todos) {
+        return Object.keys(this.todos).filter((key) => this.todos[key].isDone);
+      }
+      return this.todos;
+    },
+    activeTodos() {
+      if (this.todos) {
+        return Object.keys(this.todos).filter((key) => !this.todos[key].isDone);
+      }
+      return this.todos;
+    },
+    filteredTodos() {
+      let ans;
+      if (this.showActive) {
+        ans = this.activeTodos;
+      } else if (this.showCompleted) {
+        ans = this.completedTodos;
+      } else {
+        ans = Object.keys(this.todos);
+      }
+      return ans;
     },
   },
 };

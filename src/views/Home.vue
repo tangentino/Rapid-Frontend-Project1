@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row justify="space-around">
-        <v-col cols="8">
+        <v-col cols="10">
           <v-text-field
             label="What needs to be done?"
             v-model="todoText"
@@ -17,7 +17,7 @@
     <TodoTasks/>
     <v-btn
       @click="userLogout"
-      class="mt-10"
+      class="logout ma-10"
       color="error"
     >Logout</v-btn>
   </div>
@@ -64,3 +64,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .logout {
+    float: right
+  }
+</style>
